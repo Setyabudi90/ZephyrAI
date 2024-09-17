@@ -7,44 +7,48 @@ export const Message = ({ message, isUser }) => {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       <div
-        className={`flex flex-col max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl w-full`}
+        className={`${
+          isUser
+            ? "bg-gray-900 text-white"
+            : "text-white md:max-w-2xl sm:max-w-[390px]"
+        } rounded-lg p-3 shadow-md max-w-max break-words`}
       >
-        {/* Indicator Label */}
-        <div
-          className={`text-xs font-semibold mb-1 ${
-            isUser ? "text-blue-300" : "text-green-300"
-          }`}
-        >
-          {isUser ? "You" : "ZephyrAI"}
+        <div className="flex flex-end mb-1">
+          <span className="text-sm font-bold">
+            <p
+              className={`${
+                isUser
+                  ? "text-purple-600 font-bold text-xl underline decoration-slice decoration-inherit"
+                  : "text-indigo-600 font-bold text-xl mb-2 underline decoration-slice decoration-inherit"
+              }`}
+            >
+              {isUser ? "YOU" : "ZephyrAI"}
+            </p>
+          </span>
         </div>
-        <div
-          className={`bg-gray-800 p-4 rounded-lg shadow-md ${
-            isUser ? "text-right" : "text-left"
-          }`}
-        >
-          <Markdown
-            children={message}
-            components={{
-              code(props) {
-                const { children, className, node, ...rest } = props;
-                const match = /language-(\w+)/.exec(className || "");
-                return match ? (
-                  <SyntaxHighlighter
-                    {...rest}
-                    PreTag="div"
-                    children={String(children).replace(/\n$/, "")}
-                    language={match[1]}
-                    style={dark}
-                  />
-                ) : (
-                  <code {...rest} className={className}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
-          />
-        </div>
+        <Markdown
+          children={message}
+          components={{
+            code(props) {
+              const { children, className, ...rest } = props;
+              const match = /language-(\w+)/.exec(className || "");
+              return match ? (
+                <SyntaxHighlighter
+                  node={rest.node.tagName}
+                  PreTag="div"
+                  children={String(children).replace(/\n$/, "")}
+                  language={match[1]}
+                  style={dark}
+                  className="sm:max-w-[340px] md:max-w-2xl"
+                />
+              ) : (
+                <code {...rest} className={className}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        />
       </div>
     </div>
   );
